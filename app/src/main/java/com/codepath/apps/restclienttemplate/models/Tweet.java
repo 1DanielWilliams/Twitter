@@ -20,6 +20,9 @@ public class Tweet {
     public String createdAt;
     public User user;
     public String mediaImageUrl;
+    public String numLikes;
+    public String numRetweets;
+    public String numReplies;
 
     // Empty constructor needed by the Parceler library
     public Tweet(){}
@@ -29,6 +32,9 @@ public class Tweet {
         tweet.body = josnObject.getString("text");
         tweet.createdAt = josnObject.getString("created_at");
         tweet.user = User.fromJson(josnObject.getJSONObject("user"));
+        tweet.numLikes = josnObject.getString("favorite_count");
+        tweet.numRetweets = josnObject.getString("retweet_count");
+
 
         JSONObject entities = josnObject.getJSONObject("entities");
 

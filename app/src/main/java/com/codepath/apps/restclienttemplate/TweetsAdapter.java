@@ -69,6 +69,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvScreenName;
         ImageView ivMediaImage;
         TextView tvRelativeTime;
+        TextView tvNumLikes;
+        TextView tvNumRetweets;
 
         public ViewHolder(@NonNull View itemView) { //itemView passed in is a representation of one row of the recycler viewn
             super(itemView);
@@ -77,12 +79,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             ivMediaImage = itemView.findViewById(R.id.ivMediaImage);
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
+            tvNumLikes = itemView.findViewById(R.id.tvNumLikes);
+            tvNumRetweets = itemView.findViewById(R.id.tvNumRetweets);
+
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
             tvRelativeTime.setText(Tweet.getRelativeTimeAgo(tweet.createdAt));
+            tvNumLikes.setText(tweet.numLikes);
+            tvNumRetweets.setText(tweet.numRetweets);
+
 
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
             //checks if there is an image to display
