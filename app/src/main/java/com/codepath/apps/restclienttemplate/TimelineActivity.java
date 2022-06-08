@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import okhttp3.Headers;
 
      public static final String TAG = "TimelineActivity";
      private final int REQUEST_CODE = 20;
+     private SwipeRefreshLayout swipeContainer;
 
     TwitterClient client;
     RecyclerView rvTweets;
@@ -40,6 +42,22 @@ import okhttp3.Headers;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.white);
+
 
         client = TwitterApp.getRestClient(this);
 
@@ -54,6 +72,35 @@ import okhttp3.Headers;
 
         populateHomeTimeLine();
     }
+
+     public void fetchTimelineAsync(int page) {
+         // Send the network request to fetch the updated data
+         // `client` here is an instance of Android Async HTTP
+         // getHomeTimeline is an example endpoint.
+         client.getHomeTimeline(new JsonHttpResponseHandler() {
+             @Override
+             public void onSuccess(int statusCode, Headers headers, JSON json) {
+                 Log.i(TAG, "onSuccess: refreshed");
+                    // Clears out old items before appending in the new ones
+                    adapter.clear();
+                    // adds the new items to the adapter
+                    try {
+                        adapter.addAll(Tweet.fromJsonArray(json.jsonArray));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Signal refresh has finished
+                    swipeContainer.setRefreshing(false);
+             }
+
+             @Override
+             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                 Log.e("DEBUG", "Fetch timeline error", throwable);
+
+             }
+         });
+     }
 
      @Override
      public boolean onCreateOptionsMenu(Menu menu) {
