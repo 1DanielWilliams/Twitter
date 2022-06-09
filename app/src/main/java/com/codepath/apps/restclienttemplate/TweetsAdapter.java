@@ -1,24 +1,37 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
+import okhttp3.Headers;
+
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> { //after defining the viewholder, extend the TweetsAdapter class (bc now it has something to reference)
 
+    private final String TAG = "TweetsAdapter";
     Context context;
     List<Tweet> tweets;
+    TwitterClient client;
     //pass in contacts and listed tweets
 
 
@@ -51,6 +64,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //get the data at position
         Tweet tweet = tweets.get(position);
+        holder.rootView.setTag(tweet);
         // Bind the tweet with the view holder
         holder.bind(tweet);
     }
@@ -64,6 +78,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     //define a viewholder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        View rootView;
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
@@ -71,9 +86,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvRelativeTime;
         TextView tvNumLikes;
         TextView tvNumRetweets;
+        ImageButton btnLike;
 
         public ViewHolder(@NonNull View itemView) { //itemView passed in is a representation of one row of the recycler viewn
             super(itemView);
+            rootView = itemView;
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
@@ -81,6 +98,60 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
             tvNumLikes = itemView.findViewById(R.id.tvNumLikes);
             tvNumRetweets = itemView.findViewById(R.id.tvNumRetweets);
+
+            btnLike = itemView.findViewById(R.id.btnLike);
+            btnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Tweet tweet = (Tweet) rootView.getTag();
+                    long tweetID = tweet.ID;
+                    client = TwitterApp.getRestClient(context);
+
+                    // Sends a POST req to like tweet if tweet isn't liked
+                    if(!tweet.isLiked) {
+                        Log.i(TAG, "onClick: LIKED");
+                        client.likeTweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                int numLikes = Integer.parseInt(tweet.numLikes);
+                                numLikes++;
+                                tweet.numLikes = String.valueOf(numLikes);
+                                tweet.isLiked = true;
+
+
+                                notifyDataSetChanged(); //have to figure out how to update the
+
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+                    } else {
+                        Log.i(TAG, "onClick: UNLIKED");
+                        client.unLikeTweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                int numLikes = Integer.parseInt(tweet.numLikes);
+                                numLikes--;
+                                tweet.numLikes = String.valueOf(numLikes);
+                                tweet.isLiked = false;
+                                notifyDataSetChanged(); //have to figure out how to update the
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                            }
+                        });
+                    }
+
+
+
+                }
+            });
+
+
 
         }
 
@@ -94,12 +165,20 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
             //checks if there is an image to display
-
             if (tweet.mediaImageUrl == null) {
                 ivMediaImage.setVisibility(View.GONE);
             } else {
                 ivMediaImage.setVisibility(View.VISIBLE);
                 Glide.with(context).load(tweet.mediaImageUrl).into(ivMediaImage);
+            }
+
+            // If a tweet is liked set colors to red
+            if(tweet.isLiked) {
+                btnLike.setColorFilter(Color.argb(255, 255, 0, 0));
+                tvNumLikes.setTextColor(Color.argb(255, 255, 0, 0));
+            } else {
+                tvNumLikes.setTextColor(Color.argb(255, 0, 0, 0));
+                btnLike.setColorFilter(Color.argb(0, 255, 0, 0));
             }
         }
     }

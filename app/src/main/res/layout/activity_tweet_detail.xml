@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TweetDetailActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="113dp"
+        android:layout_height="114dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="5dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="13dp"
+        android:layout_toEndOf="@+id/imageView"
+        tools:text="RandomUser1234" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:textSize="25sp"
+        tools:text="TextView TextViewTextView TextView TextView TextView TextView TextView" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="134dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        tools:text="2:58 PM" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView2"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/textView3"
+        tools:text="6/8/22" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView2"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/textView4"
+        tools:text="Twitter For Iphone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView4"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView8"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/imageButton2"
+        android:layout_marginTop="9dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="12dp"
+        tools:text="35 Retweets" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/textView7"
+        tools:text="1 Quote Tweet" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/textView8"
+        tools:text="10 Likes" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/textView9"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="22dp"
+        android:layout_toEndOf="@+id/imageButton3"
+        tools:srcCompat="@drawable/ic_vector_heart_stroke" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="22dp"
+        android:src="@drawable/ic_vector_reply"
+        tools:srcCompat="@drawable/ic_vector_reply" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/textView8"
+        android:layout_marginStart="69dp"
+        android:layout_marginTop="22dp"
+        android:layout_toEndOf="@+id/imageButton2"
+        android:src="@drawable/ic_vector_retweet_stroke"
+        tools:srcCompat="@drawable/ic_vector_retweet_stroke" />
+
+</RelativeLayout>
