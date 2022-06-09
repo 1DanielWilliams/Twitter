@@ -6,12 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TweetDetailActivity">
+
     <ImageView
         android:id="@+id/ivProfileDetail"
         android:layout_width="113dp"
         android:layout_height="114dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="5dp"
         tools:srcCompat="@tools:sample/avatars" />
@@ -29,15 +32,15 @@
 
     <TextView
         android:id="@+id/tvOverviewDetail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfileDetail"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="5dp"
-        android:textSize="30sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="27sp"
         tools:text="TextView TextViewTextView TextView TextView TextView TextView TextView" />
 
     <ImageView
@@ -75,13 +78,13 @@
 
     <TextView
         android:id="@+id/tvSourceDetail"
-        android:layout_width="168dp"
+        android:layout_width="261dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivImageDetail"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="13dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="108dp"
+        android:layout_marginEnd="15dp"
         android:layout_toEndOf="@+id/tvDateDetail"
         tools:text="Twitter For Iphone" />
 
@@ -89,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/tvDateDetail"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:background="@android:color/darker_gray" />
 
     <View
@@ -120,24 +123,26 @@
 
     <TextView
         android:id="@+id/tvNumLikesDetail"
-        android:layout_width="wrap_content"
+        android:layout_width="93dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTimeDetail"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="75dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="115dp"
+        android:layout_marginEnd="75dp"
         android:layout_toEndOf="@+id/tvNumRetweetsDetail"
         tools:text="10 Likes" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/btnLikeDetail"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_below="@+id/tvNumLikesDetail"
         android:layout_marginStart="70dp"
         android:layout_marginTop="22dp"
         android:layout_toEndOf="@+id/imageButton3"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_vector_heart_stroke"
         tools:srcCompat="@drawable/ic_vector_heart_stroke" />
 
     <ImageButton
@@ -148,8 +153,9 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="77dp"
         android:layout_marginTop="22dp"
-        android:src="@drawable/ic_vector_reply"
-        tools:srcCompat="@drawable/ic_vector_reply" />
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/sym_action_chat"
+        tools:srcCompat="@android:drawable/sym_action_chat" />
 
     <ImageButton
         android:id="@+id/imageButton3"
@@ -159,6 +165,7 @@
         android:layout_marginStart="69dp"
         android:layout_marginTop="22dp"
         android:layout_toEndOf="@+id/imageButton2"
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_vector_retweet_stroke"
         tools:srcCompat="@drawable/ic_vector_retweet_stroke" />
 

@@ -26,6 +26,7 @@ public class Tweet {
     public long ID;
     public boolean isLiked;
     public int position;
+    public boolean isRetweeted;
 
     // Empty constructor needed by the Parceler library
     public Tweet(){}
@@ -40,6 +41,7 @@ public class Tweet {
         tweet.ID = josnObject.getLong("id");
         tweet.isLiked = josnObject.getBoolean("favorited");
         tweet.source = josnObject.getString("source");
+        tweet.isRetweeted = josnObject.getBoolean("retweeted");
 
 
         JSONObject entities = josnObject.getJSONObject("entities");

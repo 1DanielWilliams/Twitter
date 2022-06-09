@@ -2,20 +2,29 @@ package com.codepath.apps.restclienttemplate;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.parceler.Parcels;
+
+import okhttp3.Headers;
 
 public class TweetDetailActivity extends AppCompatActivity {
 
     private final String TAG = "TweetDetailActivity";
+    TwitterClient client;
+    Context context;
+
     Tweet tweet;
     ImageView ivProfileDetail;
     TextView tvProfileNameDetail;
@@ -27,17 +36,19 @@ public class TweetDetailActivity extends AppCompatActivity {
     TextView tvNumLikesDetail;
     TextView tvSourceDetail;
     TextView tvUsernameDetail;
+    ImageButton btnLikeDetail;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet_detail);
+        context = this;
         tweet = (Tweet) Parcels.unwrap(getIntent().getParcelableExtra(Tweet.class.getSimpleName()));
 
         //  Loads profile picture
         ivProfileDetail = findViewById(R.id.ivProfileDetail);
-        Glide.with(this).load(tweet.user.profileImageUrl).into(ivProfileDetail);
+        Glide.with(this).load(tweet.user.profileImageUrl).circleCrop().into(ivProfileDetail);
 
         // Loads screen name
         tvProfileNameDetail = findViewById(R.id.tvProfileNameDetail);
@@ -94,5 +105,61 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvUsernameDetail = findViewById(R.id.tvUsernameDetail);
         tvUsernameDetail.setText("@" + tweet.user.userName);
 
+        // sets functionality for the like button
+        btnLikeDetail = findViewById(R.id.btnLikeDetail);
+        if(tweet.isLiked){
+            btnLikeDetail.setColorFilter(Color.argb(255, 255, 0, 0));
+        } else {
+            btnLikeDetail.setColorFilter(Color.argb(0, 255, 0, 0));
+        }
+        onLiked(btnLikeDetail, tweet);
+
+    }
+
+    private void onLiked(ImageButton btnLikeDetail, Tweet tweet) {
+        btnLikeDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long tweetID = tweet.ID;
+                client = TwitterApp.getRestClient(context);
+
+                // Sends a POST req to like tweet if tweet isn't liked
+                if(!tweet.isLiked) {
+                    client.likeTweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            int numLikes = Integer.parseInt(tweet.numLikes);
+                            numLikes++;
+                            tweet.numLikes = String.valueOf(numLikes);
+                            tvNumLikesDetail.setText(tweet.numLikes + " Likes");
+                            btnLikeDetail.setColorFilter(Color.argb(255, 255, 0, 0));
+                            tweet.isLiked = true;
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        }
+                    });
+                } else {
+                    client.unLikeTweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            int numLikes = Integer.parseInt(tweet.numLikes);
+                            numLikes--;
+                            tweet.numLikes = String.valueOf(numLikes);
+                            tvNumLikesDetail.setText(tweet.numLikes + " Likes");
+                            btnLikeDetail.setColorFilter(Color.argb(0, 255, 0, 0));
+                            tweet.isLiked = false;
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                        }
+                    });
+                }
+            }
+        });
     }
 }

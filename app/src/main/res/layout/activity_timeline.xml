@@ -29,4 +29,6 @@
         android:layout_marginBottom="8dp"
         android:onClick="onLogoutButton"
         android:text="@string/logout" />
+
+
 </RelativeLayout>

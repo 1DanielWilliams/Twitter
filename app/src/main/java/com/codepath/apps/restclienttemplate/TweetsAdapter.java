@@ -90,6 +90,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvNumLikes;
         TextView tvNumRetweets;
         ImageButton btnLike;
+        ImageButton btnRetweet;
         TextView tvUsername;
 
         public ViewHolder(@NonNull View itemView) { //itemView passed in is a representation of one row of the recycler viewn
@@ -106,6 +107,50 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
             btnLike = itemView.findViewById(R.id.btnLike);
             likeButtonListener(btnLike);
+
+            btnRetweet = itemView.findViewById(R.id.btnRetweet);
+            btnRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Tweet tweet = (Tweet) rootView.getTag();
+                    long tweetID = tweet.ID;
+                    client = TwitterApp.getRestClient(context);
+                    if(!tweet.isRetweeted) {
+                        client.retweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                tweet.isRetweeted = true;
+                                int numRetweets = Integer.parseInt(tweet.numRetweets);
+                                numRetweets++;
+                                tweet.numRetweets = String.valueOf(numRetweets);
+                                tvNumRetweets.setText(tweet.numRetweets);
+                                notifyItemChanged(tweet.position);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+                    } else {
+                        client.unRetweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                tweet.isRetweeted = false;
+                                int numRetweets = Integer.parseInt(tweet.numRetweets);
+                                numRetweets--;
+                                tweet.numRetweets = String.valueOf(numRetweets);
+                                tvNumRetweets.setText(tweet.numRetweets);
+                                notifyItemChanged(tweet.position);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+                    }
+                }
+            });
+
 
             tvBody.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,8 +174,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvUsername.setText( "@"+ tweet.user.userName);
 
 
-            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
-            //checks if there is an image to display
+            Glide.with(context).load(tweet.user.profileImageUrl).circleCrop().into(ivProfileImage);
+            //checks if the tweet has an image to display
             if (tweet.mediaImageUrl == null) {
                 ivMediaImage.setVisibility(View.GONE);
             } else {
@@ -138,13 +183,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 Glide.with(context).load(tweet.mediaImageUrl).into(ivMediaImage);
             }
 
-            // If a tweet is liked set colors to red
+            // If a tweet is liked set color of text and icon to red
             if(tweet.isLiked) {
                 btnLike.setColorFilter(Color.argb(255, 255, 0, 0));
                 tvNumLikes.setTextColor(Color.argb(255, 255, 0, 0));
             } else {
                 tvNumLikes.setTextColor(Color.argb(255, 0, 0, 0));
                 btnLike.setColorFilter(Color.argb(0, 255, 0, 0));
+            }
+
+            // if a tweet has been retweeted, set color of text and icon to green
+            if (tweet.isRetweeted) {
+                btnRetweet.setColorFilter(Color.argb(255, 68, 206, 17));
+                tvNumRetweets.setTextColor(Color.argb(255, 68, 206, 17));
+            } else {
+                btnRetweet.setColorFilter(Color.argb(0, 0, 0, 0));
+                tvNumRetweets.setTextColor(Color.argb(255, 0, 0, 0));
+
+
             }
         }
 

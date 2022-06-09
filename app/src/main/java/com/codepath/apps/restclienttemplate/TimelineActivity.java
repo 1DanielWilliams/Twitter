@@ -32,6 +32,8 @@ import okhttp3.Headers;
      public static final String TAG = "TimelineActivity";
      private final int REQUEST_CODE = 20;
      private SwipeRefreshLayout swipeContainer;
+     private EndlessRecyclerViewScrollListener scrollListener;
+
 
     TwitterClient client;
     RecyclerView rvTweets;
@@ -48,13 +50,10 @@ import okhttp3.Headers;
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchTimelineAsync(0);
             }
         });
-        // Configure the refreshing colors
+        // Configures the refreshing colors
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.white);
 
@@ -66,21 +65,56 @@ import okhttp3.Headers;
         //init the list of tweets and adapter
         tweets =  new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         // Recycler view setup: layout manager and the adapter
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
+
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+
+                long tweetID = (tweets.get(tweets.size() - 1)).ID;
+                loadNextDataFromApi(tweetID - 1);
+            }
+        };
+
+        rvTweets.addOnScrollListener(scrollListener);
 
         populateHomeTimeLine();
     }
 
+     // Append the next page of data into the adapter
+     // This method probably sends out a network request and appends new data items to your adapter.
+     public void loadNextDataFromApi(long offset) {
+         // Send an API request to retrieve appropriate paginated data
+         client.getHomeTimelineEndless(offset, new JsonHttpResponseHandler() {
+             @Override
+             public void onSuccess(int statusCode, Headers headers, JSON json) {
+                 JSONArray jsonArray = json.jsonArray;
+                 Log.i(TAG, "onSuccess: " + String.valueOf(offset));
+                 try {
+                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                     adapter.notifyDataSetChanged();
+                 } catch (JSONException e) {
+                 }
+             }
+
+             @Override
+             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                 Log.e(TAG, "onFailureEndless: ",throwable );
+             }
+         });
+     }
+
      public void fetchTimelineAsync(int page) {
          // Send the network request to fetch the updated data
          // `client` here is an instance of Android Async HTTP
-         // getHomeTimeline is an example endpoint.
-         client.getHomeTimeline(new JsonHttpResponseHandler() {
+         client.getHomeTimeline(1, new JsonHttpResponseHandler() {
              @Override
              public void onSuccess(int statusCode, Headers headers, JSON json) {
-                 Log.i(TAG, "onSuccess: refreshed");
                     // Clears out old items before appending in the new ones
                     adapter.clear();
                     // adds the new items to the adapter
@@ -96,7 +130,6 @@ import okhttp3.Headers;
 
              @Override
              public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                 Log.e("DEBUG", "Fetch timeline error", throwable);
 
              }
          });
@@ -139,23 +172,20 @@ import okhttp3.Headers;
      }
 
      private void populateHomeTimeLine() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+        client.getHomeTimeline(1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess! " + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
-                    Log.e(TAG, "Json exception", e);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure! " + response, throwable);
-
+                Log.e(TAG, "onFailurePopulate: ", throwable);
             }
         });
     }
@@ -171,4 +201,21 @@ import okhttp3.Headers;
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
-}
+
+     MenuItem miActionProgressItem;
+
+     @Override
+     public boolean onPrepareOptionsMenu(Menu menu) {
+         miActionProgressItem = menu.findItem(R.id.miActionProgress);
+         return super.onPrepareOptionsMenu(menu);
+     }
+     public void showProgressBar() {
+         // Show progress item
+         miActionProgressItem.setVisible(true);
+     }
+
+     public void hideProgressBar() {
+         // Hide progress item
+         miActionProgressItem.setVisible(false);
+     }
+ }
