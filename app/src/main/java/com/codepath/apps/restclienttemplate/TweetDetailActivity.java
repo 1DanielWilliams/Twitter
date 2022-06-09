@@ -37,6 +37,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     TextView tvSourceDetail;
     TextView tvUsernameDetail;
     ImageButton btnLikeDetail;
+    ImageButton btnRetweetDetail;
 
 
     @Override
@@ -105,7 +106,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvUsernameDetail = findViewById(R.id.tvUsernameDetail);
         tvUsernameDetail.setText("@" + tweet.user.userName);
 
-        // sets functionality for the like button
+        // impliments liking funcitonality
         btnLikeDetail = findViewById(R.id.btnLikeDetail);
         if(tweet.isLiked){
             btnLikeDetail.setColorFilter(Color.argb(255, 255, 0, 0));
@@ -113,6 +114,54 @@ public class TweetDetailActivity extends AppCompatActivity {
             btnLikeDetail.setColorFilter(Color.argb(0, 255, 0, 0));
         }
         onLiked(btnLikeDetail, tweet);
+
+        btnRetweetDetail = findViewById(R.id.btnRetweetDetail);
+        if (tweet.isRetweeted) {
+            btnRetweetDetail.setColorFilter(Color.argb(255, 68, 206, 17));
+        } else {
+            btnRetweetDetail.setColorFilter(Color.argb(0, 0, 0, 0));
+        }
+        btnRetweetDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long tweetID = tweet.ID;
+                client = TwitterApp.getRestClient(context);
+                if(!tweet.isRetweeted) {
+                    client.retweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            tweet.isRetweeted = true;
+                            int numRetweets = Integer.parseInt(tweet.numRetweets);
+                            numRetweets++;
+                            tweet.numRetweets = String.valueOf(numRetweets);
+                            tvNumRetweetsDetail.setText(tweet.numRetweets + " Retweets");
+                            btnRetweetDetail.setColorFilter(Color.argb(255, 68, 206, 17));
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        }
+                    });
+                } else {
+                    client.unRetweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            tweet.isRetweeted = false;
+                            int numRetweets = Integer.parseInt(tweet.numRetweets);
+                            numRetweets--;
+                            tweet.numRetweets = String.valueOf(numRetweets);
+                            tvNumRetweetsDetail.setText(tweet.numRetweets + " Retweets");
+                            btnRetweetDetail.setColorFilter(Color.argb(0, 68, 206, 17));
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        }
+                    });
+                }
+
+            }
+        });
 
     }
 

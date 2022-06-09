@@ -140,7 +140,7 @@
         android:layout_below="@+id/tvNumLikesDetail"
         android:layout_marginStart="70dp"
         android:layout_marginTop="22dp"
-        android:layout_toEndOf="@+id/imageButton3"
+        android:layout_toEndOf="@+id/btnRetweetDetail"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_vector_heart_stroke"
         tools:srcCompat="@drawable/ic_vector_heart_stroke" />
@@ -158,7 +158,7 @@
         tools:srcCompat="@android:drawable/sym_action_chat" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/btnRetweetDetail"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_below="@+id/tvNumRetweetsDetail"
