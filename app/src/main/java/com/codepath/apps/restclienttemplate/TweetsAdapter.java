@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.util.Log;
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -64,6 +67,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //get the data at position
         Tweet tweet = tweets.get(position);
+        tweet.position = position;
         holder.rootView.setTag(tweet);
         // Bind the tweet with the view holder
         holder.bind(tweet);
@@ -75,7 +79,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     }
 
 
-    //define a viewholder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         View rootView;
@@ -87,6 +90,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvNumLikes;
         TextView tvNumRetweets;
         ImageButton btnLike;
+        TextView tvUsername;
 
         public ViewHolder(@NonNull View itemView) { //itemView passed in is a representation of one row of the recycler viewn
             super(itemView);
@@ -98,59 +102,20 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
             tvNumLikes = itemView.findViewById(R.id.tvNumLikes);
             tvNumRetweets = itemView.findViewById(R.id.tvNumRetweets);
+            tvUsername = itemView.findViewById(R.id.tvUsername);
 
             btnLike = itemView.findViewById(R.id.btnLike);
-            btnLike.setOnClickListener(new View.OnClickListener() {
+            likeButtonListener(btnLike);
+
+            tvBody.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Tweet tweet = (Tweet) rootView.getTag();
-                    long tweetID = tweet.ID;
-                    client = TwitterApp.getRestClient(context);
-
-                    // Sends a POST req to like tweet if tweet isn't liked
-                    if(!tweet.isLiked) {
-                        Log.i(TAG, "onClick: LIKED");
-                        client.likeTweet(tweetID, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                int numLikes = Integer.parseInt(tweet.numLikes);
-                                numLikes++;
-                                tweet.numLikes = String.valueOf(numLikes);
-                                tweet.isLiked = true;
-
-
-                                notifyDataSetChanged(); //have to figure out how to update the
-
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                            }
-                        });
-                    } else {
-                        Log.i(TAG, "onClick: UNLIKED");
-                        client.unLikeTweet(tweetID, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                int numLikes = Integer.parseInt(tweet.numLikes);
-                                numLikes--;
-                                tweet.numLikes = String.valueOf(numLikes);
-                                tweet.isLiked = false;
-                                notifyDataSetChanged(); //have to figure out how to update the
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
-                            }
-                        });
-                    }
-
-
-
+                    Intent i = new Intent(context, TweetDetailActivity.class);
+                    i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                    context.startActivity(i);
                 }
             });
-
 
 
         }
@@ -161,6 +126,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvRelativeTime.setText(Tweet.getRelativeTimeAgo(tweet.createdAt));
             tvNumLikes.setText(tweet.numLikes);
             tvNumRetweets.setText(tweet.numRetweets);
+            tvUsername.setText( "@"+ tweet.user.userName);
 
 
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
@@ -180,6 +146,49 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 tvNumLikes.setTextColor(Color.argb(255, 0, 0, 0));
                 btnLike.setColorFilter(Color.argb(0, 255, 0, 0));
             }
+        }
+
+        public void likeButtonListener(ImageButton btnLike) {
+            btnLike.setOnClickListener(view -> {
+                Tweet tweet = (Tweet) rootView.getTag();
+                long tweetID = tweet.ID;
+                client = TwitterApp.getRestClient(context);
+
+                // Sends a POST req to like tweet if tweet isn't liked
+                if(!tweet.isLiked) {
+                    client.likeTweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            int numLikes = Integer.parseInt(tweet.numLikes);
+                            numLikes++;
+                            tweet.numLikes = String.valueOf(numLikes);
+                            tweet.isLiked = true;
+
+                            notifyItemChanged(tweet.position);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        }
+                    });
+                } else {
+                    client.unLikeTweet(tweetID, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            int numLikes = Integer.parseInt(tweet.numLikes);
+                            numLikes--;
+                            tweet.numLikes = String.valueOf(numLikes);
+                            tweet.isLiked = false;
+                            notifyItemChanged(tweet.position);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                        }
+                    });
+                }
+            });
         }
     }
 }

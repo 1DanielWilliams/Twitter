@@ -22,9 +22,10 @@ public class Tweet {
     public String mediaImageUrl;
     public String numLikes;
     public String numRetweets;
-    public String numReplies;
+    public String source;
     public long ID;
     public boolean isLiked;
+    public int position;
 
     // Empty constructor needed by the Parceler library
     public Tweet(){}
@@ -38,6 +39,7 @@ public class Tweet {
         tweet.numRetweets = josnObject.getString("retweet_count");
         tweet.ID = josnObject.getLong("id");
         tweet.isLiked = josnObject.getBoolean("favorited");
+        tweet.source = josnObject.getString("source");
 
 
         JSONObject entities = josnObject.getJSONObject("entities");
@@ -70,6 +72,7 @@ public class Tweet {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         sf.setLenient(true);
+
 
         try {
             long time = sf.parse(jsonDate).getTime();
