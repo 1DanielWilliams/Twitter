@@ -128,13 +128,13 @@
 
     <TextView
         android:id="@+id/tvNumLikesDetail"
-        android:layout_width="93dp"
+        android:layout_width="149dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTimeDetail"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="75dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="75dp"
+        android:layout_marginEnd="19dp"
         android:layout_toEndOf="@+id/tvNumRetweetsDetail"
         tools:text="10 Likes" />
 

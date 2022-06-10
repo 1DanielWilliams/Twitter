@@ -145,8 +145,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivMediaImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(tweet.mediaImageUrl)
-//                        .centerCrop()
-//                        .transform(new RoundedCorners(5,));
                         .into(ivMediaImage);
             }
 

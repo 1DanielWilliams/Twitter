@@ -93,7 +93,6 @@ import okhttp3.Headers;
              @Override
              public void onSuccess(int statusCode, Headers headers, JSON json) {
                  JSONArray jsonArray = json.jsonArray;
-                 Log.i(TAG, "onSuccess: " + String.valueOf(offset));
                  try {
                      tweets.addAll(Tweet.fromJsonArray(jsonArray));
                      adapter.notifyDataSetChanged();
@@ -103,7 +102,6 @@ import okhttp3.Headers;
 
              @Override
              public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                 Log.e(TAG, "onFailureEndless: ",throwable );
              }
          });
      }
@@ -137,7 +135,7 @@ import okhttp3.Headers;
 
      @Override
      public boolean onCreateOptionsMenu(Menu menu) {
-         // Inflate the menu; this adds items to the action bar if it is present.
+         // Inflate the menu;  adds items to the action bar if it is present.
          getMenuInflater().inflate(R.menu.menu_main, menu);
          return true; //have to return true for the menu to be displayed
      }
