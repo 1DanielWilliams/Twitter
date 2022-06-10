@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="0dp"
+    android:layout_marginEnd="2dp">
 
     <View
         android:id="@+id/view"
@@ -40,6 +42,7 @@
         android:layout_below="@+id/tvScreenName"
         android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
+        android:autoLink="all"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="This is random sample text" />
 
@@ -49,9 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvBody"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="87dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="140dp"
+        android:layout_marginEnd="65dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -129,9 +132,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
-        android:layout_toEndOf="@+id/tvScreenName"
+        android:layout_toEndOf="@+id/ivVerified"
         android:text="TextView"
         android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/ivVerified"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvScreenName"
+        android:visibility="visible"
+        app:srcCompat="@drawable/verified"
+        tools:srcCompat="@drawable/verified" />
 </RelativeLayout>

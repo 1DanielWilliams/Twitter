@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -92,6 +93,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageButton btnLike;
         ImageButton btnRetweet;
         TextView tvUsername;
+        ImageView ivVerified;
 
         public ViewHolder(@NonNull View itemView) { //itemView passed in is a representation of one row of the recycler viewn
             super(itemView);
@@ -104,6 +106,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvNumLikes = itemView.findViewById(R.id.tvNumLikes);
             tvNumRetweets = itemView.findViewById(R.id.tvNumRetweets);
             tvUsername = itemView.findViewById(R.id.tvUsername);
+            ivVerified = itemView.findViewById(R.id.ivVerified);
+
 
             btnLike = itemView.findViewById(R.id.btnLike);
             likeButtonListener(btnLike);
@@ -163,6 +167,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             });
 
 
+
         }
 
         public void bind(Tweet tweet) {
@@ -180,7 +185,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivMediaImage.setVisibility(View.GONE);
             } else {
                 ivMediaImage.setVisibility(View.VISIBLE);
-                Glide.with(context).load(tweet.mediaImageUrl).into(ivMediaImage);
+                Glide.with(context)
+                        .load(tweet.mediaImageUrl)
+//                        .centerCrop()
+//                        .transform(new RoundedCorners(5,));
+                        .into(ivMediaImage);
             }
 
             // If a tweet is liked set color of text and icon to red
@@ -199,8 +208,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             } else {
                 btnRetweet.setColorFilter(Color.argb(0, 0, 0, 0));
                 tvNumRetweets.setTextColor(Color.argb(255, 0, 0, 0));
+            }
 
-
+            if (tweet.user.isVerified) {
+                ivVerified.setVisibility(View.VISIBLE);
+            } else {
+                ivVerified.setVisibility(View.GONE);
             }
         }
 

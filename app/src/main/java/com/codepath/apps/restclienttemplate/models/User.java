@@ -10,6 +10,7 @@ public class User {
     public String screenName;
     public String userName;
     public String profileImageUrl;
+    public boolean isVerified;
 
     public User() {}
 
@@ -19,6 +20,7 @@ public class User {
         user.screenName = jsonObject.getString("name");
         user.userName = jsonObject.getString("screen_name");
         user.profileImageUrl = jsonObject.getString("profile_image_url_https");
+        user.isVerified = jsonObject.getBoolean("verified");
         return user;
     }
 }

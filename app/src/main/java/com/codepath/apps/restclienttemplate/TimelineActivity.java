@@ -70,12 +70,11 @@ import okhttp3.Headers;
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
 
+
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            // Called when code is needs to be refreshed
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-
                 long tweetID = (tweets.get(tweets.size() - 1)).ID;
                 loadNextDataFromApi(tweetID - 1);
             }
@@ -126,6 +125,7 @@ import okhttp3.Headers;
 
                     // Signal refresh has finished
                     swipeContainer.setRefreshing(false);
+                    scrollListener.resetState();
              }
 
              @Override
