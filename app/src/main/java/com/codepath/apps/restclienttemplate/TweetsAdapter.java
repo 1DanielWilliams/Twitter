@@ -36,7 +36,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     Context context;
     List<Tweet> tweets;
     TwitterClient client;
-    //pass in contacts and listed tweets
 
 
     public TweetsAdapter(Context context, List<Tweet> tweets) {
@@ -125,7 +124,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     context.startActivity(i);
                 }
             });
-
         }
 
         public void bind(Tweet tweet) {

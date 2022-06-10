@@ -99,7 +99,6 @@ public class Tweet {
             }
 
         } catch (ParseException e) {
-            Log.i(TAG, "getRelativeTimeAgo failed");
             e.printStackTrace();
         }
 
