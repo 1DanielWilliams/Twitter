@@ -107,7 +107,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvUsernameDetail = findViewById(R.id.tvUsernameDetail);
         tvUsernameDetail.setText("@" + tweet.user.userName);
 
-        // impliments liking funcitonality
+        // liking funcitonality
         btnLikeDetail = findViewById(R.id.btnLikeDetail);
         if(tweet.isLiked){
             btnLikeDetail.setColorFilter(Color.argb(255, 255, 0, 0));
@@ -116,9 +116,11 @@ public class TweetDetailActivity extends AppCompatActivity {
         }
         onLiked(btnLikeDetail, tweet);
 
+        // Retweeting functionality
         btnRetweetDetail = findViewById(R.id.btnRetweetDetail);
         onRetweet(btnRetweetDetail, tweet);
 
+        // Checks if user is verified
         ivVerifiedDetail = findViewById(R.id.ivVerifiedDetail);
         if (tweet.user.isVerified) {
             ivVerifiedDetail.setVisibility(View.VISIBLE);

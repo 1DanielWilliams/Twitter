@@ -113,47 +113,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             likeButtonListener(btnLike);
 
             btnRetweet = itemView.findViewById(R.id.btnRetweet);
-            btnRetweet.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Tweet tweet = (Tweet) rootView.getTag();
-                    long tweetID = tweet.ID;
-                    client = TwitterApp.getRestClient(context);
-                    if(!tweet.isRetweeted) {
-                        client.retweet(tweetID, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                tweet.isRetweeted = true;
-                                int numRetweets = Integer.parseInt(tweet.numRetweets);
-                                numRetweets++;
-                                tweet.numRetweets = String.valueOf(numRetweets);
-                                tvNumRetweets.setText(tweet.numRetweets);
-                                notifyItemChanged(tweet.position);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                            }
-                        });
-                    } else {
-                        client.unRetweet(tweetID, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                                tweet.isRetweeted = false;
-                                int numRetweets = Integer.parseInt(tweet.numRetweets);
-                                numRetweets--;
-                                tweet.numRetweets = String.valueOf(numRetweets);
-                                tvNumRetweets.setText(tweet.numRetweets);
-                                notifyItemChanged(tweet.position);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                            }
-                        });
-                    }
-                }
-            });
+            retweetButtonListener(btnRetweet);
 
 
             tvBody.setOnClickListener(new View.OnClickListener() {
@@ -165,8 +125,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     context.startActivity(i);
                 }
             });
-
-
 
         }
 
@@ -256,6 +214,50 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
                         }
                     });
+                }
+            });
+        }
+
+        public void retweetButtonListener(ImageButton btnRetweet) {
+            btnRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Tweet tweet = (Tweet) rootView.getTag();
+                    long tweetID = tweet.ID;
+                    client = TwitterApp.getRestClient(context);
+                    if(!tweet.isRetweeted) {
+                        client.retweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                tweet.isRetweeted = true;
+                                int numRetweets = Integer.parseInt(tweet.numRetweets);
+                                numRetweets++;
+                                tweet.numRetweets = String.valueOf(numRetweets);
+                                tvNumRetweets.setText(tweet.numRetweets);
+                                notifyItemChanged(tweet.position);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+                    } else {
+                        client.unRetweet(tweetID, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                tweet.isRetweeted = false;
+                                int numRetweets = Integer.parseInt(tweet.numRetweets);
+                                numRetweets--;
+                                tweet.numRetweets = String.valueOf(numRetweets);
+                                tvNumRetweets.setText(tweet.numRetweets);
+                                notifyItemChanged(tweet.position);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            }
+                        });
+                    }
                 }
             });
         }
