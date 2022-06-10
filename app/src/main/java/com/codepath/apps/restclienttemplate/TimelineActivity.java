@@ -144,6 +144,7 @@ import okhttp3.Headers;
 
      @Override
      public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
         switch (item.getItemId()) {
             case R.id.compose:
                 //compose icon has be selected
@@ -151,6 +152,8 @@ import okhttp3.Headers;
                 Intent i = new Intent(this, ComposeActivity.class);
                 startActivityForResult(i, REQUEST_CODE);
                 return true;
+            case R.id.menuLogout:
+                onLogoutButton();
         }
          return super.onOptionsItemSelected(item);
      }
@@ -190,7 +193,7 @@ import okhttp3.Headers;
         });
     }
 
-    public void onLogoutButton(View view) { //on clicks need parameter view
+    public void onLogoutButton() { //on clicks need parameter view
         finish();
         // forget who's logged in
         TwitterApp.getRestClient(this).clearAccessToken();

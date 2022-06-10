@@ -19,16 +19,16 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <Button
-        android:id="@+id/btnlogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="onLogoutButton"
-        android:text="@string/logout" />
+<!--    <Button-->
+<!--        android:id="@+id/btnlogout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginEnd="14dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:onClick="onLogoutButton"-->
+<!--        android:text="@string/logout" />-->
 
 
 </RelativeLayout>

@@ -15,4 +15,18 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         app:actionLayout="@layout/action_view_progress" />
+
+    <item
+        android:id="@+id/menuLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/logout"
+        android:title="LOGOUT" />
+
+    <!--        android:onClick="onLogoutButton"-->
+
 </menu>
